@@ -89,3 +89,33 @@ waydroid session start
 ```
 
 If anything misbehaves, see [`troubleshooting.md`](troubleshooting.md).
+
+### 5.5 On Fedora
+
+Fedora has no support for AppArmor, and its initialization is a bit different.
+
+Ensure LXC is installed on your system.
+```sh
+sudo dnf install lxcfs
+```
+
+Initialize Waydroid and comment out line 21 of /var/lib/waydroid/lxc/waydroid/config
+before and after waydroid-nvidia-setup (the script resets the config file).
+
+```sh
+sudo waydroid init
+sudo sed -i '21s/^/#/' /var/lib/waydroid/lxc/waydroid/config
+sudo waydroid-nvidia-setup           # add --refresh <hz> to match your monitor
+sudo sed -i '21s/^/#/' /var/lib/waydroid/lxc/waydroid/config
+```
+
+The above commands only need to be ran on the first time. Afterwards, proceed as normal.
+
+```sh
+sudo systemctl enable --now waydroid-container.service
+systemctl --user enable --now wd-venus.service
+waydroid session start
+```
+
+If anything misbehaves, see [`troubleshooting.md`](troubleshooting.md).
+
