@@ -1,5 +1,14 @@
 # waydroid-nvidia
 
+> ## 🚀 Check out the new test version: [v0.2.0-rc1](https://github.com/Shiro836/waydroid-nvidia/releases/tag/v0.2.0-rc1)
+>
+> A new driver mode, **`nvidia-prolapse`**: our own Vulkan driver (Mesa NVK) talking straight to the NVIDIA kernel
+> module, shipped as a Waydroid vendor image built from source, with hardware video decode. No host renderer service,
+> closed kernel module support in testing, and Venus stays available as a mode.
+>
+> **Install, supported GPUs/drivers and known issues:** [`public-test` branch README](https://github.com/Shiro836/waydroid-nvidia/tree/public-test#readme).
+> Please report problems as issues titled `[public-test] ...`. It replaces this version once testers confirm it works.
+
 **GPU-accelerated Waydroid on the NVIDIA driver — container-native, no VM.
 Needs the open kernel modules (`nvidia-open`); the userspace stays NVIDIA's
 regular proprietary stack.**
