@@ -1,6 +1,12 @@
 # waydroid-nvidia
 
-> **New test version:** the [`public-test` branch](https://github.com/Shiro836/waydroid-nvidia/tree/public-test). It will replace this one once testers confirm it works.
+> ## 🚀 New test version: [`public-test` branch](https://github.com/Shiro836/waydroid-nvidia/tree/public-test)
+> Venus is gone: an open-source NVIDIA driver now runs right inside Android.
+> - **Up to 4× faster** than Venus
+> - **No shader stutter:** Minecraft's first item switch ~0.2 s (Venus: 1.8 s)
+> - **Hardware video decode:** H.264, HEVC, VP9, AV1
+> - **Closed kernel module works too**, older GPUs (GTX 10/900, Titan V) in testing
+> - **One command to install** on any systemd distro
 
 **GPU-accelerated Waydroid on the NVIDIA driver — container-native, no VM.
 Needs the open kernel modules (`nvidia-open`); the userspace stays NVIDIA's
