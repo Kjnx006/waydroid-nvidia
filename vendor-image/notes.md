@@ -158,7 +158,8 @@ Lunch `lineage_nvidia_waydroid_x86_64-userdebug`, out dir `out-vendor-l20-prolap
       for prime-copy.cpp, and 0018: the Android display follows the window (a display reconnect sent from hwc's own
       resize thread, enabled by `ro.vendor.composer.safe_primary_reconnect`, which `prolapse.mk` sets); 0019 lets
       the single-window per-app window drive that size too (issue #5; multi-window cards keep the fixed display); 0020 names a
-      failed EGL read-back of a wl_shm copy (pointer, unimportable layers, snapshots) instead of showing a blank buffer.
+      failed EGL read-back of a wl_shm copy (pointer, unimportable layers, snapshots) instead of showing a blank buffer. 0021: window creation
+      never waits for the Wayland thread (its configure is dispatched on the creation queue by the composer thread).
     - `hardware/interfaces` with `patches/hardware/interfaces`: composer 2.1 HAL 0001 makes a primary display
       reconnect safe while frames are in flight (hwc2on1 re-reads the configs without holding its state mutex
       across the Display's; ComposerClient keeps the display's cached buffer handles instead of freeing them).
