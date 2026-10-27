@@ -1,8 +1,8 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: hyzor <jesper.hansson.f@gmail.com>
 Date: Sun, 25 Oct 2026 17:21:45 +0100
-Subject: [PATCH] hwcomposer: let a single-window app window resize the Android
- display
+Subject: [PATCH 2/2] hwcomposer: let a single-window app window resize the
+ Android display
 
 Patch 0017 only lets the full-UI window (task "0") drive the display size, so
 a per-app window in single-window mode (persist.waydroid.multi_windows off)
@@ -27,10 +27,10 @@ Android to the window size, one display reconnect per settled drag.
  3 files changed, 30 insertions(+), 4 deletions(-)
 
 diff --git a/hwcomposer/hwcomposer.cpp b/hwcomposer/hwcomposer.cpp
-index b9a0a5c..d4fbaf8 100644
+index ade5a3c..73e955d 100644
 --- a/hwcomposer/hwcomposer.cpp
 +++ b/hwcomposer/hwcomposer.cpp
-@@ -1021,6 +1021,10 @@ static int hwc_open(const struct hw_module_t* module, const char* name,
+@@ -1026,6 +1026,10 @@ static int hwc_open(const struct hw_module_t* module, const char* name,
          ALOGW("usage of subsurfaces requested but wl_subcompositor is not supported. Disabling it.");
          pdev->should_compose = false;
      }
@@ -42,7 +42,7 @@ index b9a0a5c..d4fbaf8 100644
      if (!property_get_bool("persist.waydroid.cursor_on_subsurface", false)) {
          pdev->display->cursor_handler.reset(new wl_cursor_cursor_handler(pdev));
 diff --git a/hwcomposer/wayland-hwc.cpp b/hwcomposer/wayland-hwc.cpp
-index 0a9e8ad..6280813 100644
+index ea30e40..a31de20 100644
 --- a/hwcomposer/wayland-hwc.cpp
 +++ b/hwcomposer/wayland-hwc.cpp
 @@ -583,6 +583,21 @@ fit_guest_display_to_window(struct display *display)
@@ -107,6 +107,3 @@ index 0f46428..0735818 100644
      /* The Android display size the last configure asked for (Wayland thread). */
      int follow_width;
      int follow_height;
--- 
-2.56.0
-

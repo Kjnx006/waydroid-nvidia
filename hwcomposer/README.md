@@ -9,7 +9,7 @@ the NDK (no AOSP tree). Nothing is binary-patched.
 
 | Input | Pin |
 |---|---|
-| hwcomposer | `waydroid/android_hardware_waydroid` `7750307152d2c1bc0f81ca0163c9253a7a82d8fa` (the baseline's HWC_BASE) |
+| hwcomposer | `waydroid/android_hardware_waydroid` `a3e42399afbd23613f123a28bda658a4c6c1faec` (lineage-20, 2026-10-18; the vendor image's `hardware/waydroid` pin) |
 | NDK | r29 (`14206865`), zip sha256 `4abbbcdc…` (what built the prebuilt: `.note.android.ident`) |
 | AOSP headers | android-13-era commits of libhidl, libhwbinder, libfmq, fmtlib, frameworks/native, hardware/interfaces, system/tools/hidl, libbase, libhardware, system/core; LineageOS system_logging; waydroid minigbm `16844bab` (same values as the baseline's `packaging/ci/hwc-pins.env`) |
 | Static guest libs | libffi 3.4.6, wayland 1.25.0 (+ native wayland-scanner), libxkbcommon 1.7.0, libdrm 2.4.133 headers; tarball sha256s in `pins.env` |
@@ -30,9 +30,9 @@ is on another GPU; the same-GPU path does not touch Vulkan.
 
 `build.sh` applies the patches in a fresh git tree and fails if one does not apply or changes
 nothing (a `git apply` in a non-repo directory inside another work tree silently skips every path).
-`-ffile-prefix-map` and fixed xkbcommon config roots keep build-host paths out of the binary; with
-the baseline's build paths mapped back in, `HWC_PATCHES_UPTO=0001` reproduces the baseline's
-prebuilt hwcomposer byte for byte (checked in the development tree).
+`-ffile-prefix-map` and fixed xkbcommon config roots keep build-host paths out of the binary; on the
+former base 7750307 with the baseline's build paths mapped back in, `HWC_PATCHES_UPTO=0001`
+reproduced the baseline's prebuilt hwcomposer byte for byte (checked in the development tree).
 
 Glue copied from the baseline's former `build/hwcomposer/` (MIT; this tree replaced it): `hidl-gen/` (CMake for a standalone
 hidl-gen), `libcxx_compat.cpp` and `libcxx-override/__config_site` (r29 libc++ headers vs the

@@ -46,7 +46,7 @@ set -euo pipefail
 # --- patch-regen anchors (verified ancestors; see dev/sync-patches) ---
 : "${MESA_BASE:=a8ce4d8}"
 : "${VIRGL_BASE:=dc35e4d}"
-: "${HWC_BASE:=7750307}"
+: "${HWC_BASE:=a3e4239}"
 : "${WAYDROID_BASE:=a33a5c0}"
 
 # --- helpers ---
