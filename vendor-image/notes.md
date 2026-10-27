@@ -154,7 +154,8 @@ Lunch `lineage_nvidia_waydroid_x86_64-userdebug`, out dir `out-vendor-l20-prolap
     - `hardware/waydroid` with `patches/hardware/waydroid`: our hwcomposer 0001-0016 rebased onto 6e898e9 (0001
       conflicts resolved to our side; upstream's leak/null-handle/0660-FIFO fixes kept) plus an `Android.bp` commit
       for prime-copy.cpp, and 0018: the Android display follows the window (a display reconnect sent from hwc's own
-      resize thread, enabled by `ro.vendor.composer.safe_primary_reconnect`, which `prolapse.mk` sets).
+      resize thread, enabled by `ro.vendor.composer.safe_primary_reconnect`, which `prolapse.mk` sets); 0019 lets
+      the single-window per-app window drive that size too (issue #5; multi-window cards keep the fixed display).
     - `hardware/interfaces` with `patches/hardware/interfaces`: composer 2.1 HAL 0001 makes a primary display
       reconnect safe while frames are in flight (hwc2on1 re-reads the configs without holding its state mutex
       across the Display's; ComposerClient keeps the display's cached buffer handles instead of freeing them).
