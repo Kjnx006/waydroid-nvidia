@@ -3,7 +3,7 @@
 # waydroid-nvidia-bin does the same). Installs exactly what the AUR package installs, then you run
 #   sudo waydroid-nvidia-setup [-s GAPPS] (runs waydroid init if needed, starts the container); waydroid session start
 #
-#   curl -fsSL https://raw.githubusercontent.com/Shiro836/waydroid-nvidia/public-test/packaging/install.sh | sudo bash
+#   curl -fsSL https://raw.githubusercontent.com/Shiro836/waydroid-nvidia/main/packaging/install.sh | sudo bash
 #   sudo packaging/install.sh [--tag vX.Y.Z[-rcN]] [--from DIR] [--check] [--no-deps]
 #   sudo packaging/install.sh --uninstall
 #

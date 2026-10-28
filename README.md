@@ -4,8 +4,7 @@ GPU-accelerated [Waydroid](https://waydro.id) on NVIDIA cards. Android apps and 
 inside the normal Waydroid container, with no VM. The default mode uses only the NVIDIA kernel module from your
 system; the rest of the driver is built from source.
 
-This `public-test` branch is the next version and replaces `main` once testers confirm it works.
-Please report problems as issues titled `[public-test] ...` ([what to include](docs/troubleshooting.md#reporting-a-problem)).
+Please report problems as issues ([what to include](docs/troubleshooting.md#reporting-a-problem)).
 
 ## Why switch from Venus
 
@@ -41,11 +40,11 @@ Waydroid kernel support (binder). A brand-new driver release may be refused unti
 
 ## Install
 
-Current release: [v0.2.0-rc12](https://github.com/Shiro836/waydroid-nvidia/releases/tag/v0.2.0-rc12) (prerelease).
+Current release: [v0.2.0-rc13](https://github.com/Shiro836/waydroid-nvidia/releases/tag/v0.2.0-rc13) (prerelease).
 The installer is for systemd distributions. On Arch use it too: the AUR package still has the previous release.
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/Shiro836/waydroid-nvidia/public-test/packaging/install.sh | sudo bash
+curl -fsSL https://raw.githubusercontent.com/Shiro836/waydroid-nvidia/main/packaging/install.sh | sudo bash
 sudo waydroid-nvidia-setup
 waydroid session start
 ```

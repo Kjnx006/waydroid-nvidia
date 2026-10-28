@@ -3,7 +3,7 @@
 `packaging/install.sh` installs the same files as the AUR package, on any systemd distro.
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/Shiro836/waydroid-nvidia/public-test/packaging/install.sh | sudo bash
+curl -fsSL https://raw.githubusercontent.com/Shiro836/waydroid-nvidia/main/packaging/install.sh | sudo bash
 sudo waydroid-nvidia-setup
 waydroid session start
 ```
