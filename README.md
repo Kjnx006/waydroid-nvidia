@@ -41,7 +41,8 @@ Waydroid kernel support (binder). A brand-new driver release may be refused unti
 ## Install
 
 Current release: [v0.2.0](https://github.com/Shiro836/waydroid-nvidia/releases/tag/v0.2.0).
-The installer is for systemd distributions. On Arch use it too: the AUR package still has the previous release.
+On Arch, install or update [`waydroid-nvidia-bin`](https://aur.archlinux.org/packages/waydroid-nvidia-bin) from the AUR (it replaces `waydroid`).
+On other systemd distributions use the installer:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/Shiro836/waydroid-nvidia/main/packaging/install.sh | sudo bash
@@ -49,8 +50,8 @@ sudo waydroid-nvidia-setup
 waydroid session start
 ```
 
-The installer verifies every download and will not overwrite files owned by a distro package, so remove an older
-`waydroid` or `waydroid-nvidia-bin` package first. On SELinux hosts (Fedora) it also builds and loads Waydroid's
+The installer verifies every download and will not overwrite files owned by a distro package, so remove your distro's
+`waydroid` package first. On SELinux hosts (Fedora) it also builds and loads Waydroid's
 SELinux policy module, the one Fedora's own `waydroid-selinux` package ships. `waydroid-nvidia-setup` checks your
 system, tests the driver on your GPU, and only then installs our Android vendor image. Your official vendor image is
 kept as a backup. If a check fails, it says why and leaves everything as it was.
