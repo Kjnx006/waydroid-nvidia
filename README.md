@@ -86,10 +86,9 @@ default mode.
 
 ## Known issues
 
-- With `--native-gl on`, GTA San Andreas sometimes shows black frames.
-- `glibc-shim` on drivers 550–560 and 580 works around two NVIDIA driver bugs, which may add some frame latency.
+- On some setups the mouse cursor is invisible inside Android ([#36](https://github.com/Shiro836/waydroid-nvidia/issues/36)).
 - Above about 333 Hz the display can stall. Cap the rate with `sudo waydroid-nvidia-setup --refresh <hz>`.
-- Android 14 and 15 have no official Waydroid images and are untested.
+- Only Android 13 for now (Android 16 and 17 planned).
 
 ## More
 
