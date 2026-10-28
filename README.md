@@ -1,17 +1,23 @@
 # waydroid-nvidia
 
+[![release](https://img.shields.io/github/v/release/Shiro836/waydroid-nvidia)](https://github.com/Shiro836/waydroid-nvidia/releases)
+[![AUR](https://img.shields.io/aur/version/waydroid-nvidia-bin)](https://aur.archlinux.org/packages/waydroid-nvidia-bin)
+[![nix](https://img.shields.io/badge/NixOS-community%20flake%20(v0.1.2)-5277C3?logo=nixos&logoColor=white)](https://github.com/yigexuanmu/waydroid-nvidia-nix)
+[![build](https://github.com/Shiro836/waydroid-nvidia/actions/workflows/build.yml/badge.svg)](https://github.com/Shiro836/waydroid-nvidia/actions/workflows/build.yml)
+[![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+
 GPU-accelerated [Waydroid](https://waydro.id) on NVIDIA cards. Android apps and games render on your NVIDIA GPU
 inside the normal Waydroid container, with no VM. The default mode uses only the NVIDIA kernel module from your
 system; the rest of the driver is built from source.
 
 Please report problems as issues ([what to include](docs/troubleshooting.md#reporting-a-problem)).
 
-## Why switch from Venus
+## Why waydroid-nvidia
 
-- **Fast:** 475 FPS in 3DMark Wild Life Extreme on an RTX 5090 (NVIDIA's own driver: 508)
-- **No shader stutter:** Minecraft's first item switch ~0.2 s (Venus: 1.8 s)
+- **Fast:** 475 FPS in 3DMark Wild Life Extreme on an RTX 5090, 93 % of NVIDIA's own driver
+- **No shader stutter:** Minecraft's first item switch takes ~0.2 s
 - **Hardware video decode:** H.264, HEVC, VP9, AV1 (RTX 20 and newer)
-- **Closed kernel module works too**
+- **GTX 900 to RTX 50**, open or closed kernel module
 
 ## Does my setup work?
 
