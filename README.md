@@ -40,7 +40,7 @@ Waydroid kernel support (binder). A brand-new driver release may be refused unti
 
 ## Install
 
-Current release: [v0.2.0-rc13](https://github.com/Shiro836/waydroid-nvidia/releases/tag/v0.2.0-rc13) (prerelease).
+Current release: [v0.2.0](https://github.com/Shiro836/waydroid-nvidia/releases/tag/v0.2.0).
 The installer is for systemd distributions. On Arch use it too: the AUR package still has the previous release.
 
 ```sh
