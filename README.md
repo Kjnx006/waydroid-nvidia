@@ -88,7 +88,7 @@ default mode.
 
 - On some setups the mouse cursor is invisible inside Android ([#36](https://github.com/Shiro836/waydroid-nvidia/issues/36)).
 - Above about 333 Hz the display can stall. Cap the rate with `sudo waydroid-nvidia-setup --refresh <hz>`.
-- Only Android 13 for now (Android 16 and 17 planned).
+- Only Android 13 for now (Android 17 planned).
 
 ## More
 
