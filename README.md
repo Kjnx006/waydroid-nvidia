@@ -1,144 +1,94 @@
 # waydroid-nvidia
 
-> ## 🚀 New test version: [`public-test` branch](https://github.com/Shiro836/waydroid-nvidia/tree/public-test)
-> Venus is gone: an open-source NVIDIA driver now runs right inside Android.
-> - **Up to 4× faster** than Venus
-> - **No shader stutter:** Minecraft's first item switch ~0.2 s (Venus: 1.8 s)
-> - **Hardware video decode:** H.264, HEVC, VP9, AV1
-> - **Closed kernel module works too**, older GPUs (GTX 10/900, Titan V) in testing
-> - **One command to install** on any systemd distro
+GPU-accelerated [Waydroid](https://waydro.id) on NVIDIA cards. Android apps and games render on your NVIDIA GPU
+inside the normal Waydroid container, with no VM. The default mode uses only the NVIDIA kernel module from your
+system; the rest of the driver is built from source.
 
-**GPU-accelerated Waydroid on the NVIDIA driver — container-native, no VM.
-Needs the open kernel modules (`nvidia-open`); the userspace stays NVIDIA's
-regular proprietary stack.**
+This `public-test` branch is the next version and replaces `main` once testers confirm it works.
+Please report problems as issues titled `[public-test] ...` ([what to include](docs/troubleshooting.md#reporting-a-problem)).
 
-[![build](https://github.com/Shiro836/waydroid-nvidia/actions/workflows/build.yml/badge.svg)](https://github.com/Shiro836/waydroid-nvidia/actions/workflows/build.yml)
-[![release](https://img.shields.io/github/v/release/Shiro836/waydroid-nvidia)](https://github.com/Shiro836/waydroid-nvidia/releases)
-[![AUR](https://img.shields.io/aur/version/waydroid-nvidia-bin)](https://aur.archlinux.org/packages/waydroid-nvidia-bin)
-[![nix](https://img.shields.io/badge/NixOS-community%20flake-5277C3?logo=nixos&logoColor=white)](https://github.com/yigexuanmu/waydroid-nvidia-nix)
-[![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+## Why switch from Venus
 
-Stock Waydroid can't render on NVIDIA. This project proxies Vulkan (Mesa
-Venus) over a unix socket to a host-side renderer that issues the real Vulkan
-calls — Android x86 and x86_64 app processes render on your NVIDIA GPU,
-CUDA/NVENC and full performance stay intact, everything remains a container:
+- **Fast:** 475 FPS in 3DMark Wild Life Extreme on an RTX 5090 (NVIDIA's own driver: 508)
+- **No shader stutter:** Minecraft's first item switch ~0.2 s (Venus: 1.8 s)
+- **Hardware video decode:** H.264, HEVC, VP9, AV1 (RTX 20 and newer)
+- **Closed kernel module works too**
 
-```
-Android app ── Vulkan ──▶ guest Mesa Venus ── unix socket ──▶ host renderer
-                                                                   │
-KWin ◀── hwcomposer ◀── gralloc imports ◀── NVIDIA dmabufs ◀── NVIDIA driver
-```
+## Does my setup work?
 
-Buffers are allocated host-side as NVIDIA block-linear images and travel to
-the compositor as native NVIDIA dmabufs — no cross-vendor negotiation, no
-copies. GL runs through ANGLE, ASTC textures are emulated in a compute shader
-(desktop NVIDIA lacks the hardware Android mandates), and frame sync is fully
-GPU-side (timeline syncobjs + imported sync_fd semaphores; zero per-frame
-socket roundtrips). The guest runs native high refresh — 500 Hz verified,
-with a translated ARM game holding 500 fps at 2 ms present-to-present.
+✅ works · 🧪 driver tests pass, Waydroid not tried yet · ⚠️ known bug · ⚪ untested · ❌ no
 
-Verified in the field on Turing, Ampere, Ada and Blackwell GPUs. Real games
-tested: Minecraft Bedrock, Subway Surfers, Arknights, Honkai: Star Rail —
-plus Google Play certification and ARM translation (libhoudini).
+| | default (`nvidia-prolapse`) | `glibc-shim` | `venus` |
+|---|---|---|---|
+| RTX 50 (Blackwell) | ✅ | ✅ | ✅ |
+| RTX 40 (Ada) | 🧪 | ✅ | ✅ |
+| RTX 30 (Ampere) | ✅ | ✅ | ✅ |
+| RTX 20 / GTX 16 (Turing) | 🧪 | ⚪ | ✅ |
+| Titan V (Volta) | 🧪 | ⚪ | ❌ |
+| GTX 10 (Pascal) | ✅ (⚠️ `--native-gl on` crashes on some textures) | ⚪ | ❌ |
+| GTX 900 / 750 (Maxwell) | ⚠️ some GL tests fail | ⚪ | ❌ |
+| Kepler and older | ❌ | ❌ | ❌ |
+| Driver 570–615, open module | ✅ on 615, 🧪 others | ✅ on 570 and 615 | ✅ from 580 |
+| Driver 550–610, closed module | ✅ on 580, 🧪 others | ✅ on 550, 570, 580, 595 | ❌ |
+| Driver 535 | ⚪ | ❌ | ⚪ |
+| Driver 470 and older | ❌ | ❌ | ❌ |
 
-## Requirements
+Data-centre GPUs (A100, H100, V100, …) are not supported. Tested on Arch and CachyOS; `glibc-shim` also on
+Ubuntu 22.04. Only the official Android 13 image (LineageOS 20) is supported.
 
-- **NVIDIA open kernel modules** (`nvidia-open`/`nvidia-open-dkms`) — the
-  closed module has no DMA-BUF support, and every displayed buffer here is
-  one. The userspace (`nvidia-utils`) is the same proprietary code either
-  way; nouveau/NVK is out of scope (stock Waydroid handles it). Open KM
-  means **Turing (RTX 20 / GTX 16) or newer**.
-- Driver **595.71+** (610.x recommended) with **`nvidia-drm.modeset=1`**.
-- A Wayland session (tested on KWin / Plasma 6) and the usual Waydroid
-  kernel bits (binder).
-- Unsure about a machine? `tests/run-probe.sh` checks the exact
-  buffer-sharing paths in ~30 s and names anything missing — see
-  [`docs/troubleshooting.md`](docs/troubleshooting.md).
+You need `nvidia-drm.modeset=1`, a Wayland desktop on the NVIDIA GPU (tested on KDE Plasma 6) and the usual
+Waydroid kernel support (binder). A brand-new driver release may be refused until our next release knows it.
 
-## Install (Arch / AUR)
+## Install
+
+Current release: [v0.2.0-rc12](https://github.com/Shiro836/waydroid-nvidia/releases/tag/v0.2.0-rc12) (prerelease).
+The installer is for systemd distributions. On Arch use it too: the AUR package still has the previous release.
 
 ```sh
-yay -S waydroid-nvidia-bin        # provides/conflicts: waydroid
-waydroid init                     # download an Android image, as usual
-sudo waydroid-nvidia-setup        # add --refresh <hz> to match your monitor
-sudo systemctl enable --now waydroid-container.service
-systemctl --user enable --now wd-venus.service
-# re-log-in once (udev rule for /dev/udmabuf), then:
-waydroid session start            # or launch Waydroid from the app menu
+curl -fsSL https://raw.githubusercontent.com/Shiro836/waydroid-nvidia/public-test/packaging/install.sh | sudo bash
+sudo waydroid-nvidia-setup
+waydroid session start
 ```
 
-`waydroid-nvidia-setup` deploys the guest stack, writes the config, verifies
-your environment (modeset, vendor image, render node) and removes stale
-config left by older installs. Safe to re-run any time — it's also the first
-thing to try when something misbehaves. Verify acceleration:
+The installer verifies every download and will not overwrite files owned by a distro package, so remove an older
+`waydroid` or `waydroid-nvidia-bin` package first. On SELinux hosts (Fedora) it also builds and loads Waydroid's
+SELinux policy module, the one Fedora's own `waydroid-selinux` package ships. `waydroid-nvidia-setup` checks your
+system, tests the driver on your GPU, and only then installs our Android vendor image. Your official vendor image is
+kept as a backup. If a check fails, it says why and leaves everything as it was.
 
-```sh
-sudo waydroid shell dumpsys SurfaceFlinger | grep GLES
-# GLES: ... ANGLE (NVIDIA, Vulkan ... Venus (NVIDIA GeForce ...))
-sudo waydroid shell getprop ro.product.cpu.abilist
-# x86_64,x86,... means Houdini can translate ARM32-only apps into the x86 path
-```
+On a fresh install the setup runs `waydroid init` for you. For Google apps, use `sudo waydroid-nvidia-setup -s GAPPS`
+instead (the default is `VANILLA`, without them). On an existing install `-s` only checks the system type; to switch,
+run `sudo waydroid init -f -s GAPPS`, then `sudo waydroid-nvidia-setup` again (apps and data are kept).
 
-**If your compositor is not on the NVIDIA GPU** (monitors connected to
-another GPU, iGPU-driven laptop panel): the compositor can't display this
-stack's NVIDIA buffers and the Waydroid window dies instantly. The workaround
-is running Waydroid nested inside gamescope pinned to the NVIDIA GPU, so
-compositing happens on NVIDIA and gamescope hands your desktop something it
-can display. Needs `gamescope` and `wayland-utils`:
+Run `sudo waydroid-nvidia-setup` again after every NVIDIA driver or package update; Waydroid refuses to start until
+you do. `sudo waydroid-nvidia-setup --restore-official-vendor` takes you back to stock Waydroid. Uninstalling is
+described in [docs/install-manual.md](docs/install-manual.md#uninstall).
 
-```sh
-waydroid session stop; sleep 5
-W=$(wayland-info | grep -B1 'flags: current' | grep -oP 'width:\s*\K\d+' | head -1)
-H=$(wayland-info | grep -B1 'flags: current' | grep -oP 'height:\s*\K\d+' | head -1)
-GPU=$(lspci -nn | grep -Ei 'vga|3d' | grep -i nvidia | grep -oP '\[\K10de:[0-9a-f]{4}' | head -1)
-gamescope -f -W "$W" -H "$H" --prefer-vk-device "$GPU" -- \
-  sh -c 'WAYLAND_DISPLAY=$GAMESCOPE_WAYLAND_DISPLAY exec waydroid show-full-ui'
-```
+## Driver modes
 
-Launch apps from inside Android while nested (`waydroid app launch` swaps the
-window and crashes gamescope). **Broken on hybrid Intel+NVIDIA laptops right
-now** — gamescope crashes and takes the host session down with it
-(issue #2, upstream gamescope#1590); hybrid support is being worked on there.
+| Mode | How it works | Pick it when |
+|---|---|---|
+| `nvidia-prolapse` (default) | Our open-source driver (Mesa NVK plus our own NVIDIA backend) runs inside Android and talks to the kernel module directly | almost always: it has video decode and the widest driver support |
+| `venus` | Android's Vulkan calls go over a socket to the NVIDIA driver on the host | the default mode fails on your machine; slowest, needs the open kernel module |
+| `glibc-shim` | Your host's own NVIDIA driver (550 or newer) runs inside Android through our compatibility libraries | you want NVIDIA's own driver and shader compiler; the setup checks your driver first and needs its 32-bit libraries too |
 
-**NixOS:** community flake —
-[yigexuanmu/waydroid-nvidia-nix](https://github.com/yigexuanmu/waydroid-nvidia-nix).
-**Other distros:** the same binaries install anywhere — see
-[`docs/install-manual.md`](docs/install-manual.md).
+Switch with `sudo waydroid-nvidia-setup --mode venus` (or `--mode glibc-shim`, `--mode nvidia-prolapse`). Apps get
+OpenGL ES through ANGLE by default. `--native-gl on` uses the mode's own GL driver instead: our `nvrm` in the
+default mode (a bit faster but newer, so compare with `--native-gl off` before reporting a GL bug), NVIDIA's GLES in
+`glibc-shim` (driver 570 or newer). In `glibc-shim`, run the setup again after every driver update, as in the
+default mode.
 
-**Releases are fully attested**: every asset is CI-built from pinned sources
-and carries SLSA provenance —
-`gh attestation verify <asset> --repo Shiro836/waydroid-nvidia`.
+## Known issues
 
-## Documentation
+- With `--native-gl on`, GTA San Andreas sometimes shows black frames.
+- `glibc-shim` on drivers 550–560 and 580 works around two NVIDIA driver bugs, which may add some frame latency.
+- Above about 333 Hz the display can stall. Cap the rate with `sudo waydroid-nvidia-setup --refresh <hz>`.
+- Android 14 and 15 have no official Waydroid images and are untested.
 
-- [`docs/troubleshooting.md`](docs/troubleshooting.md) — health checks, known
-  failure modes, one-command debug capture, GPU probe kit
-- [`docs/architecture.md`](docs/architecture.md) — how the stack works
-- [`docs/transport-design.md`](docs/transport-design.md) — socket protocol
-  extensions (fences, imports, GPU allocation)
-- [`docs/building.md`](docs/building.md) — building from source, repo layout,
-  CI/attestation
-- [`docs/dev-workflow.md`](docs/dev-workflow.md) — dev environment setup and
-  the edit → build → deploy → measure loop
-- [`docs/install-manual.md`](docs/install-manual.md) — non-Arch installation
+## More
 
-## Limitations & roadmap
+[Troubleshooting](docs/troubleshooting.md) · [installer options and uninstall](docs/install-manual.md) ·
+[how it works](docs/architecture.md) · [building](docs/building.md) · [developing](docs/dev-setup.md) ·
+[third-party sources](THIRD_PARTY.md)
 
-Not yet supported: ETC2 texture emulation (ASTC is; affected games show
-placeholder textures), ASTC readback (uploads/sampling work), RGBA_FP16
-gralloc buffers. dma_buf mmap read bandwidth is below native (readback paths
-only). Planned: self-contained guest image published as an OTA channel,
-shared-memory ring transport, ETC2, input-to-photon measurement.
-
-## Prior art & references
-
-Anbox Cloud on NVIDIA (commercial existence proof of this shape) ·
-waydroid#1883 / #564 / #1402 ·
-[Mesa Venus](https://gitlab.freedesktop.org/mesa/mesa) ·
-[virglrenderer](https://gitlab.freedesktop.org/virgl/virglrenderer) · ANGLE.
-
-## License
-
-Original code in `src/`, `build/`, `dev/`, `tests/`, `docs/` is MIT (see
-[`LICENSE`](LICENSE)). Files under `patches/` are derivative works of their
-respective upstreams and carry those upstreams' licenses.
+Our code is MIT licensed. Patches to other projects keep their upstream licenses; see [LICENSE](LICENSE).
