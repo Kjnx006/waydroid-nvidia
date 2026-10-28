@@ -19,9 +19,9 @@
 
 pkgname=waydroid-nvidia-bin
 # release assets are hashed by `updpkgsums` at tag time (packaging/aur/RELEASING.md step 3)
-pkgver=0.2.0rc1
+pkgver=0.2.0
 pkgrel=1
-_tag=v0.2.0-rc1
+_tag=v0.2.0
 _waydroid_sha=a33a5c0b31d89d6ce687381104b30aff4dd2d330
 pkgdesc="Waydroid with NVIDIA GPU acceleration (our vendor image: NVK + Rust RM backend in the container by default; Venus mode selectable)"
 arch=('x86_64')
